@@ -2,12 +2,13 @@ mod common;
 mod day_01;
 mod day_02;
 mod day_03;
+mod day_04;
 
 use clap::Parser;
 use common::*;
 use std::{error::Error, fs::File, iter, path::Path};
 
-static SOLVERS: &[SolverFn] = &[day_01::solve, day_02::solve, day_03::solve];
+static SOLVERS: &[SolverFn] = &[day_01::solve, day_02::solve, day_03::solve, day_04::solve];
 
 fn day_range(s: &str) -> Result<u8, String> {
     clap_num::number_range(s, 1, 25)
