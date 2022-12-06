@@ -67,9 +67,9 @@ impl RPS {
 }
 
 #[inline]
-fn round_score(p1: RPS, p2: RPS) -> u32 {
-    let mut score = p2.base_score();
-    match p1.play(p2) {
+fn round_score(p_1: RPS, p_2: RPS) -> u32 {
+    let mut score = p_2.base_score();
+    match p_1.play(p_2) {
         GameResult::Loss => score += 6,
         GameResult::Draw => score += 3,
         _ => (),
@@ -86,20 +86,20 @@ pub fn solve(input: File) -> Result<Solution, Box<dyn Error>> {
         let (lhs, rhs) = l
             .split_once(' ')
             .ok_or_else(|| format!("malformed input at line {}", i + 1))?;
-        let p1 = match lhs {
+        let p_1 = match lhs {
             "A" => Ok(RPS::Rock),
             "B" => Ok(RPS::Paper),
             "C" => Ok(RPS::Scissors),
             _ => Err(format!("malformed input at line {}", i + 1)),
         }?;
-        let (p2_a, p2_b) = match rhs {
-            "X" => Ok((RPS::Rock, p1.want_result(GameResult::Loss))),
-            "Y" => Ok((RPS::Paper, p1.want_result(GameResult::Draw))),
-            "Z" => Ok((RPS::Scissors, p1.want_result(GameResult::Win))),
+        let (p_2_a, p_2_b) = match rhs {
+            "X" => Ok((RPS::Rock, p_1.want_result(GameResult::Loss))),
+            "Y" => Ok((RPS::Paper, p_1.want_result(GameResult::Draw))),
+            "Z" => Ok((RPS::Scissors, p_1.want_result(GameResult::Win))),
             _ => Err(format!("malformed input at line {}", i + 1)),
         }?;
-        total_score_a += round_score(p1, p2_a);
-        total_score_b += round_score(p1, p2_b);
+        total_score_a += round_score(p_1, p_2_a);
+        total_score_b += round_score(p_1, p_2_b);
     }
     Ok((Box::new(total_score_a), Box::new(total_score_b)))
 }
