@@ -4,6 +4,7 @@ mod day_02;
 mod day_03;
 mod day_04;
 mod day_05;
+mod day_06;
 
 use clap::Parser;
 use common::*;
@@ -15,6 +16,7 @@ static SOLVERS: &[SolverFn] = &[
     day_03::solve,
     day_04::solve,
     day_05::solve,
+    day_06::solve,
 ];
 
 fn day_range(s: &str) -> Result<u8, String> {
