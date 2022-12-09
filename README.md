@@ -3,7 +3,7 @@
 My attempt at <https://adventofcode.com/2022>. To run, use:
 
 ```sh
-cargo run -r [-- [-d <day>] [-i <input>]]
+cargo +nightly run -r [-- [-d <day>] [-i <input>]]
 ```
 
 Optional arguments:

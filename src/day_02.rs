@@ -23,29 +23,29 @@ impl From<bool> for GameResult {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum RPS {
+enum RockPaperScissors {
     Rock = 1,
     Paper = 2,
     Scissors = 3,
 }
 
-impl From<u8> for RPS {
+impl From<u8> for RockPaperScissors {
     fn from(i: u8) -> Self {
         match i {
-            1 => RPS::Rock,
-            2 => RPS::Paper,
-            _ => RPS::Scissors,
+            1 => RockPaperScissors::Rock,
+            2 => RockPaperScissors::Paper,
+            _ => RockPaperScissors::Scissors,
         }
     }
 }
 
-impl RPS {
+impl RockPaperScissors {
     #[inline]
     fn base_score(self) -> u32 {
         self as u32
     }
 
-    fn want_result(self, res: GameResult) -> RPS {
+    fn want_result(self, res: GameResult) -> RockPaperScissors {
         match res {
             GameResult::Draw => self,
             GameResult::Win => (((self as u8) + 1) % 3).into(),
@@ -53,21 +53,21 @@ impl RPS {
         }
     }
 
-    fn play(self, other: RPS) -> GameResult {
+    fn play(self, other: RockPaperScissors) -> GameResult {
         if self == other {
             return GameResult::Draw;
         }
         match self {
-            RPS::Rock => other == RPS::Scissors,
-            RPS::Paper => other == RPS::Rock,
-            RPS::Scissors => other == RPS::Paper,
+            RockPaperScissors::Rock => other == RockPaperScissors::Scissors,
+            RockPaperScissors::Paper => other == RockPaperScissors::Rock,
+            RockPaperScissors::Scissors => other == RockPaperScissors::Paper,
         }
         .into()
     }
 }
 
 #[inline]
-fn round_score(p_1: RPS, p_2: RPS) -> u32 {
+fn round_score(p_1: RockPaperScissors, p_2: RockPaperScissors) -> u32 {
     let mut score = p_2.base_score();
     match p_1.play(p_2) {
         GameResult::Loss => score += 6,
@@ -87,15 +87,15 @@ pub fn solve(input: File) -> Result<Solution, Box<dyn Error>> {
             .split_once(' ')
             .ok_or_else(|| format!("malformed input at line {}", i + 1))?;
         let p_1 = match lhs {
-            "A" => Ok(RPS::Rock),
-            "B" => Ok(RPS::Paper),
-            "C" => Ok(RPS::Scissors),
+            "A" => Ok(RockPaperScissors::Rock),
+            "B" => Ok(RockPaperScissors::Paper),
+            "C" => Ok(RockPaperScissors::Scissors),
             _ => Err(format!("malformed input at line {}", i + 1)),
         }?;
         let (p_2_a, p_2_b) = match rhs {
-            "X" => Ok((RPS::Rock, p_1.want_result(GameResult::Loss))),
-            "Y" => Ok((RPS::Paper, p_1.want_result(GameResult::Draw))),
-            "Z" => Ok((RPS::Scissors, p_1.want_result(GameResult::Win))),
+            "X" => Ok((RockPaperScissors::Rock, p_1.want_result(GameResult::Loss))),
+            "Y" => Ok((RockPaperScissors::Paper, p_1.want_result(GameResult::Draw))),
+            "Z" => Ok((RockPaperScissors::Scissors, p_1.want_result(GameResult::Win))),
             _ => Err(format!("malformed input at line {}", i + 1)),
         }?;
         total_score_a += round_score(p_1, p_2_a);

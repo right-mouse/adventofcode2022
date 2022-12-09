@@ -1,3 +1,5 @@
+#![feature(get_mut_unchecked)]
+
 mod common;
 mod day_01;
 mod day_02;
@@ -5,6 +7,7 @@ mod day_03;
 mod day_04;
 mod day_05;
 mod day_06;
+mod day_07;
 
 use clap::Parser;
 use common::*;
@@ -17,6 +20,7 @@ static SOLVERS: &[SolverFn] = &[
     day_04::solve,
     day_05::solve,
     day_06::solve,
+    day_07::solve,
 ];
 
 fn day_range(s: &str) -> Result<u8, String> {
