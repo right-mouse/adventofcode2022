@@ -11,9 +11,9 @@ mod day_07;
 mod day_08;
 mod day_09;
 
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 use common::*;
-use std::{error::Error, fs::File, iter, path::Path};
+use std::{collections::BTreeSet, error::Error, fs::File, io::Write, iter, path::Path};
 
 static SOLVERS: &[SolverFn] = &[
     day_01::solve,
@@ -27,11 +27,43 @@ static SOLVERS: &[SolverFn] = &[
     day_09::solve,
 ];
 
-fn day_range(s: &str) -> Result<u8, String> {
-    clap_num::number_range(s, 1, 25)
+#[inline]
+fn capitalize_first_letter(s: &str) -> String {
+    s[0..1].to_uppercase() + &s[1..]
 }
 
-fn input_from_path(path: &str, days: &[u8]) -> Result<Vec<File>, Box<dyn Error>> {
+fn error(err: Box<dyn Error>) -> ! {
+    _ = Args::command()
+        .error(
+            clap::error::ErrorKind::Format,
+            capitalize_first_letter(&err.to_string()),
+        )
+        .print();
+    _ = std::io::stdout().lock().flush();
+    _ = std::io::stderr().lock().flush();
+    std::process::exit(1)
+}
+
+#[derive(Clone)]
+struct Days(Vec<usize>);
+
+fn parse_days(s: &str) -> Result<Days, String> {
+    let mut days = BTreeSet::new();
+    for part in s.split(',') {
+        if let Some(range) = part.split_once('-') {
+            let start = clap_num::number_range(range.0, 1, SOLVERS.len())?;
+            let end = clap_num::number_range(range.1, 1, SOLVERS.len())?;
+            for d in start..=end {
+                days.insert(d);
+            }
+        } else {
+            days.insert(clap_num::number_range(part, 1, SOLVERS.len())?);
+        }
+    }
+    Ok(Days(days.into_iter().collect()))
+}
+
+fn inputs_from_path(path: &str, days: &[usize]) -> Result<Vec<File>, Box<dyn Error>> {
     let p = Path::new(path);
     if !p.is_dir() && !p.is_file() {
         return Err(Box::from(format!("cannot access {path:?}: no such file or directory")));
@@ -57,10 +89,10 @@ fn input_from_path(path: &str, days: &[u8]) -> Result<Vec<File>, Box<dyn Error>>
 
 #[derive(Parser)]
 struct Args {
-    /// The day (1 - 25)
+    /// The day(s) (comma separated list including ranges with '-')
     #[clap(long = "day", short = 'd')]
-    #[clap(value_parser = day_range)]
-    day: Option<u8>,
+    #[clap(value_parser = parse_days)]
+    days: Option<Days>,
 
     /// The input directory (or file for a single day)
     #[clap(long = "input", short = 'i')]
@@ -68,18 +100,14 @@ struct Args {
     input: String,
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     let args = Args::parse();
-    let days = match args.day {
-        Some(d) => vec![d],
-        None => (1u8..=25u8).collect(),
-    };
-    let inputs = input_from_path(&args.input, &days)?;
+    let days = args.days.unwrap_or(Days((1..=SOLVERS.len()).collect())).0;
+    let inputs = inputs_from_path(&args.input, &days).unwrap_or_else(|err| error(err));
     for (day, file) in days.into_iter().zip(inputs.into_iter()) {
-        let results = SOLVERS[day as usize - 1](file)?;
+        let results = SOLVERS[day - 1](file).unwrap_or_else(|err| error(err));
         println!("Day {day}");
         println!("  Part 1: {}", results.0);
         println!("  Part 2: {}", results.1);
     }
-    Ok(())
 }
