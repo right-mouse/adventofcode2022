@@ -10,6 +10,7 @@ mod day_06;
 mod day_07;
 mod day_08;
 mod day_09;
+mod day_10;
 
 use clap::{CommandFactory, Parser};
 use common::*;
@@ -25,6 +26,7 @@ static SOLVERS: &[SolverFn] = &[
     day_07::solve,
     day_08::solve,
     day_09::solve,
+    day_10::solve,
 ];
 
 #[inline]
@@ -107,7 +109,7 @@ fn main() {
     for (day, file) in days.into_iter().zip(inputs.into_iter()) {
         let results = SOLVERS[day - 1](file).unwrap_or_else(|err| error(err));
         println!("Day {day}");
-        println!("  Part 1: {}", results.0);
-        println!("  Part 2: {}", results.1);
+        println!("  Part 1: {}", results.0.to_string().replace('\n', "\n          "));
+        println!("  Part 2: {}", results.1.to_string().replace('\n', "\n          "));
     }
 }
