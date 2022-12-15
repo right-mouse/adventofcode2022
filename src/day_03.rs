@@ -12,7 +12,7 @@ fn char_idx(c: char) -> usize {
         // For A-Z, map ASCII codes 65-90 => 27-52.
         code - 38
     } else {
-        // For A-Z, map ASCII codes 97-122 => 1-26.
+        // For a-z, map ASCII codes 97-122 => 1-26.
         code - 96
     }
 }
