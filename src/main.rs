@@ -14,6 +14,7 @@ mod day_10;
 mod day_11;
 mod day_12;
 mod day_13;
+mod day_14;
 
 use clap::{CommandFactory, Parser};
 use common::*;
@@ -33,6 +34,7 @@ static SOLVERS: &[SolverFn] = &[
     day_11::solve,
     day_12::solve,
     day_13::solve,
+    day_14::solve,
 ];
 
 #[inline]
