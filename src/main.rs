@@ -1,4 +1,6 @@
+#![feature(array_zip)]
 #![feature(get_mut_unchecked)]
+#![feature(hash_drain_filter)]
 
 mod common;
 mod day_01;
@@ -15,6 +17,7 @@ mod day_11;
 mod day_12;
 mod day_13;
 mod day_14;
+mod day_15;
 
 use clap::{CommandFactory, Parser};
 use common::*;
@@ -35,6 +38,7 @@ static SOLVERS: &[SolverFn] = &[
     day_12::solve,
     day_13::solve,
     day_14::solve,
+    day_15::solve,
 ];
 
 #[inline]
